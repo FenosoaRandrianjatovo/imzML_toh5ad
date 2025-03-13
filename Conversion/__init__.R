@@ -13,7 +13,7 @@ library(Cardinal)
 library(SingleCellExperiment)
 library(zellkonverter)
 
-# Specify the path to your imzML file (ensure the corresponding ibd is in the same folder)
+# Specify the path to ibd and imzML file 
 imzml_file <- '/home/fenosoa/scratch/Maya_Project/meta_base_MSI_data/pm.imzML'
 
 # Read the imzML data; the ibd file is automatically located if it is in the same directory
