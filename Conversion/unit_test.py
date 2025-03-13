@@ -9,7 +9,7 @@ import anndata
 imzml_file = '/home/fenosoa/scratch/Maya_Project/meta_base_MSI_data/pm.imzML'
 
 
-# Create the parser object (this automatically handles the ibd file)
+# Create the parser object 
 p = ImzMLParser(imzml_file)
 
 # Initialize lists to store the intensity data and coordinates
