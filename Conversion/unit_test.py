@@ -1,52 +1,55 @@
+# Source https://pyimzml.readthedocs.io/en/latest/index.html
+
 from pyimzml.ImzMLParser import ImzMLParser
 import numpy as np
 import pandas as pd
 import anndata
 
 # Specify the path of  imzML file with the corresponding ibd (they should be in the same folder)
-imzml_file = '/home/fenosoa/scratch/Maya_Project/meta_base_MSI_data/pm.imzML'
+imzml_file = '/home/fenosoa/scratch/Maya_Project/meta_base_MSI_data/pm.imzML'from pyimzml.ImzMLParser import ImzMLParser
 
-# Create the parser object
-parser = ImzMLParser(imzml_file)
 
-# Retrieve a common m/z axis from the first pixel
-first_coords = parser.coordinates[0]
-common_mzs, _ = parser.getspectrum(first_coords)
+# Create the parser object (this automatically handles the ibd file)
+p = ImzMLParser(imzml_file)
 
-# Initialize lists to store intensity arrays and spatial coordinates
-all_intensities = []
-all_coords = []
+# Initialize lists to store the intensity data and coordinates
+spectra_list = []
+coords_list = []
 
-# Loop over all pixel coordinates in the imzML file
-for coords in parser.coordinates:
-    mzs, intensities = parser.getspectrum(coords)
-    # If the m/z axis for each spectrum might differ,
-    # you would need to re-bin intensities to a common m/z axis.
-    all_intensities.append(intensities)
-    all_coords.append(coords)
+# Loop over all pixel coordinates using the index
+for idx, coords in enumerate(p.coordinates):
+    # Get m/z values and intensities for this pixel using its index
+    mzs, intensities = p.getspectrum(idx)
+    spectra_list.append(intensities)
+    coords_list.append(coords)
 
-# Convert the list of intensity arrays to a NumPy array.
-# The resulting matrix will have shape (n_pixels, n_mz_values)
-data_matrix = np.array(all_intensities)
+# Assume the first pixel's m/z axis is common for all pixels
+common_mzs, _ = p.getspectrum(0)
+
+# Convert the list of spectra to a NumPy array
+# Each row corresponds to a pixel and each column to an m/z value.
+data_matrix = np.array(spectra_list)
 
 # Create a DataFrame for spatial coordinates.
-# imzML coordinates can be (x, y) or (x, y, z). Adjust accordingly.
-if len(all_coords[0]) == 2:
-    coords_df = pd.DataFrame(all_coords, columns=['x', 'y'])
-elif len(all_coords[0]) == 3:
-    coords_df = pd.DataFrame(all_coords, columns=['x', 'y', 'z'])
+# Adjust the column names based on whether you have 2D or 3D data.
+if len(coords_list[0]) == 3:
+    coords_df = pd.DataFrame(coords_list, columns=['x', 'y', 'z'])
 else:
-    coords_df = pd.DataFrame(all_coords, columns=[f'coord_{i}' for i in range(len(all_coords[0]))])
+    coords_df = pd.DataFrame(coords_list, columns=['x', 'y'])
 
-# Create an AnnData object.
-# X holds the intensity data, and the obs DataFrame holds spatial coordinates.
+# Create an AnnData object:
+# - X holds the intensity data (pixels x m/z values)
+# - obs contains spatial coordinates for each pixel.
 adata = anndata.AnnData(X=data_matrix, obs=coords_df)
 
-# Add the common m/z axis as a variable annotation
+# Annotate the variable (feature) axis with the common m/z values.
 adata.var['m/z'] = common_mzs
 
-# Save the AnnData object to a single h5ad file.
-output_file = 'pm_final.h5ad'
+# Save the AnnData object to an h5ad file.
+output_file = 'pm_output.h5ad'
 adata.write(output_file)
+
+print(f"Conversion complete. Data has been saved to {output_file}")
+
 
 print(f"Conversion complete. The data has been saved to {output_file}")
