@@ -47,7 +47,7 @@ sce <- SingleCellExperiment(
 rowData(sce)$mz <- mz_values
 
 # Specify the output file name
-output_file <- "output.h5ad"
+output_file <- "pm_output.h5ad"
 
 # Write the SingleCellExperiment to a single h5ad file
 writeH5AD(sce, output_file)
