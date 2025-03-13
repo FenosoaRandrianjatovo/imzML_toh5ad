@@ -3,10 +3,10 @@ import numpy as np
 import pandas as pd
 import anndata
 
-# Specify the path to your imzML file (the corresponding ibd should be in the same folder)
+# Specify the path of  imzML file with the corresponding ibd (they should be in the same folder)
 imzml_file = '/home/fenosoa/scratch/Maya_Project/meta_base_MSI_data/pm.imzML'
 
-# Create the parser object (this automatically handles the ibd file)
+# Create the parser object
 parser = ImzMLParser(imzml_file)
 
 # Retrieve a common m/z axis from the first pixel
