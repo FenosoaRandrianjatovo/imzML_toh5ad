@@ -46,7 +46,7 @@ adata = anndata.AnnData(X=data_matrix, obs=coords_df)
 adata.var['m/z'] = common_mzs
 
 # Save the AnnData object to a single h5ad file.
-output_file = 'output.h5ad'
+output_file = 'pm_final.h5ad'
 adata.write(output_file)
 
 print(f"Conversion complete. The data has been saved to {output_file}")
