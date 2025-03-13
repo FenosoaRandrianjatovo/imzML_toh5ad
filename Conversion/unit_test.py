@@ -6,7 +6,7 @@ import pandas as pd
 import anndata
 
 # Specify the path of  imzML file with the corresponding ibd (they should be in the same folder)
-imzml_file = '/home/fenosoa/scratch/Maya_Project/meta_base_MSI_data/pm.imzML'from pyimzml.ImzMLParser import ImzMLParser
+imzml_file = '/home/fenosoa/scratch/Maya_Project/meta_base_MSI_data/pm.imzML'
 
 
 # Create the parser object (this automatically handles the ibd file)
